@@ -39,6 +39,7 @@ ALPHA_REGISTER = {
 
 #globale Variabeln
 binOut = []
+storePin, shiftPin, dataPin = 15, 14, 18
 
 ###########################################
 ##############FUNKTIONEN###################
@@ -57,6 +58,14 @@ def stringToBin():
 		
 	return binArr
 
+def bitToLED(arr):
+	global storePin, shiftPin, dataPin
+	for b in arr:
+		#GPIO.output(shiftPin, 0)
+		#GPIO.output(dataPin, b)
+		#GPIO.output(shiftPin, 1)
+	
+	#GPIO.output(storePin, 1)
 	
 ###########################################
 ##############INITIALISIERUNG##############
@@ -64,8 +73,13 @@ def stringToBin():
 
 #GPIO Pins
 #GPIO.setmode(GPIO.BCM)
-#GPIO.setup()
-#GPIO.
+#GPIO.setup(shiftPin, GPIO.OUT) #SH_CP (Taktgeber)
+#GPIO.setup(storePin, GPIO.OUT) #ST_CP (für die Ausgabe an die LEDs)
+#GPIO.setup(dataPin, GPIO.OUT) #DS (hier die Bits einfließen lassen)
+
+#GPIO.output(14, 0)
+#GPIO.output(15, 0)
+#GPIO.output(18, 0)
 
 ###########################################
 #################PROZESS###################
@@ -73,3 +87,7 @@ def stringToBin():
 
 binOut = stringToBin()
 
+for arr in binOut:
+	bitToLED(arr)
+	time.sleep(1.5)
+	#GPIO.output(storePin, 0)
