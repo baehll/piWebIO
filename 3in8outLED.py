@@ -6,9 +6,9 @@ import time
 ###########################################
 
 
-#Alphabet in Binaer (eigene Erfindnung)
+#Alphabet in Binaer (eigene Erfindung)
 ALPHA_REGISTER = {
-"0": "00000000",
+" ": "00000000",
 "A": "00000001", 
 "B": "00000010", 
 "C": "00000011", 
@@ -39,7 +39,8 @@ ALPHA_REGISTER = {
 
 #globale Variabeln
 binOut = []
-storePin, shiftPin, dataPin = 15, 14, 18
+SDI, SRCLK, RCLK = 22, 27, 18
+repeat = True
 
 ###########################################
 ##############FUNKTIONEN###################
@@ -56,41 +57,59 @@ def stringToBin():
 		binArr.append(ALPHA_REGISTER[x])
 		iteratorPosition += 1
 		
+	binArr.append("00000000")
+	
 	return binArr
 
 def bitToLED(arr):
-	global storePin, shiftPin, dataPin
-	print("Bitliste: ")
+	global SDI, SRCLK, RCLK
+	#print("Bitliste: ")
 	
 	for b in arr:
-		print(b) 
-		GPIO.output(shiftPin, 0)
-		GPIO.output(dataPin, int(b))
-		GPIO.output(shiftPin, 1)
-	
-	GPIO.output(storePin, 1)
-	
+		#print(b) 
+		GPIO.output(SDI, int(b))
+		GPIO.output(SRCLK, 0)
+		GPIO.output(SRCLK, 1)
+		
+
+	GPIO.output(RCLK, 0)
+	GPIO.output(RCLK, 1)
+
 ###########################################
 ##############INITIALISIERUNG##############
 ###########################################
 
 #GPIO Pins
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(shiftPin, GPIO.OUT) #SH_CP (Taktgeber)
-GPIO.setup(storePin, GPIO.OUT) #ST_CP (fuer die Ausgabe an die LEDs)
-GPIO.setup(dataPin, GPIO.OUT) #DS (hier die Bits einfliessen lassen)
+GPIO.setwarnings(False)
+GPIO.setup(SDI, GPIO.OUT) #Datainput, enthaelt die Bits
+GPIO.setup(SRCLK, GPIO.OUT) #Schiebt den Bit aus SDI in das Register
+GPIO.setup(RCLK, GPIO.OUT) #Laesst das Register einmal ausgeben
 
-GPIO.output(14, 0)
-GPIO.output(15, 0)
-GPIO.output(18, 0)
+GPIO.output(SDI, 0)
+GPIO.output(SRCLK, 0)
+GPIO.output(RCLK, 0)
 
 ###########################################
 #################PROZESS###################
 ###########################################
 
-binOut = stringToBin()
+while repeat:
+	bitToLED(["00000000"])	
+	binOut = stringToBin()
 
-for arr in binOut:
-	bitToLED(arr)
-	time.sleep(1.5)
-	GPIO.output(storePin, 0)
+	for arr in binOut:
+		print("Teil Arr: " + arr)
+		bitToLED(arr)
+		time.sleep(1.5)
+
+	dec = ""
+	while dec != "Y" and dec != "N":
+		dec = raw_input("Programm abbrechen? Y/N: ")
+		if dec == "N":
+			repeat = True
+		elif dec == "Y":
+			repeat = False
+		else: 
+			print("Bitte Y/N eingeben")
+GPIO.cleanup()
