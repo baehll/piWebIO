@@ -5,6 +5,14 @@
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 </head>
 	<body>
-		<a href="/python">Link zur Test.py</a>
+		<form action="/python" method="post">
+			<div>
+				<label for="script">Python Script: </label>
+				<input type="text" id="script" name="script"></input>
+			</div>
+			<input type="submit" value="Submit"></input>
+		</form>
+		<a href="/chat">Chatweiterleitung</a>
+
 	</body>
 </html>
