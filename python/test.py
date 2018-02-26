@@ -1,3 +1,3 @@
-import os
+import sys
 
-print("Test.py aufgerufen")
+print("Phrase: " + sys.argv[1]);
