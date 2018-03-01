@@ -41,7 +41,6 @@ ALPHA_REGISTER = {
 #globale Variabeln
 binOut = []
 SDI, SRCLK, RCLK = 22, 27, 18
-repeat = True
 
 ###########################################
 ##############FUNKTIONEN###################
@@ -50,6 +49,8 @@ repeat = True
 def stringToBin():
 	word = sys.argv[1]
 	word = word.upper()
+	
+	print(word)
 
 	binArr = []
 	iteratorPosition = 0
